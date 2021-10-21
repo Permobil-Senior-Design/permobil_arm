@@ -10,6 +10,11 @@ project(permobil_arm)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  	moveit_core
+	moveit_task_constructor_core
+	moveit_ros_planning_interface
+	rosparam_shortcuts
+
 )
 
 ## System dependencies are found with CMake's conventions
@@ -205,5 +210,19 @@ include_directories(
 # catkin_add_nosetests(test)
 
 
-add_executable(xarm_teleop_joy src/xarm_teleop_joy.cpp)
-target_link_libraries(xarm_teleop_joy ${catkin_LIBRARIES})
+
+
+# declare a demo consisting of a single cpp file
+function(demo name)
+	add_executable(${PROJECT_NAME}_${name} src/${name}.cpp)
+	add_dependencies(${PROJECT_NAME}_${name} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+	target_link_libraries(${PROJECT_NAME}_${name} ${catkin_LIBRARIES})
+	set_target_properties(${PROJECT_NAME}_${name} PROPERTIES OUTPUT_NAME ${name} PREFIX "")
+	install(TARGETS ${PROJECT_NAME}_${name}
+		ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+		LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+		RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+	)
+endfunction()
+
+demo(task_constructor_cartesian_demo)

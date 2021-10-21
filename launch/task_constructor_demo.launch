@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <launch>
   <!-- Load panda demo with MTC's execution capability -->
-  <include file="$(find moveit_resources_panda_moveit_config)/launch/demo.launch">
-    <arg name="use_rviz" value="false"/>
-  </include>
+  <include file="$(find xarm7_gripper_moveit_config)/launch/demo.launch">
+  #</include>
   <param name="move_group/capabilities" value="move_group/ExecuteTaskSolutionCapability" />
 
-  <!-- Run rviz with prepared config -->
-  <include file="$(find moveit_resources_panda_moveit_config)/launch/moveit_rviz.launch">
-    <arg name="rviz_config" value="$(find moveit_task_constructor_demo)/config/mtc.rviz" />
-  </include>
+
+
+   <node name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false"
+	args="-d $(find permobil_arm)/config/mtc_xarm.rviz" output="screen">
+    <rosparam command="load" file="$(find xarm7_gripper_moveit_config)/config/kinematics.yaml"/>
+   </node>
+
 </launch>
