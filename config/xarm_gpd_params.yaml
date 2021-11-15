@@ -11,7 +11,7 @@ image_geometry_filename = 0
 #   hand_height: the height of the hand
 #   init_bite: the minimum amount of the object to be covered by the hand
 # Panda (Visual approximation)
-finger_width = 0.01
+finger_width = 0.02
 hand_outer_diameter = 0.12
 hand_depth = .06
 hand_height = 0.02
@@ -23,8 +23,8 @@ init_bite = 0.01
 #   volume_height: the height of the cube inside the robot hand
 #   image_size: the size of the image (width and height; image is square)
 #   image_num_channels: the number of image channels
-volume_width = 0.10
-volume_depth = 0.1
+volume_width = 0.08
+volume_depth = 0.06
 volume_height = 0.02
 image_size = 60
 image_num_channels = 15
@@ -41,7 +41,7 @@ weights_file = /home/jeoseo/ws_grasp_2/src/gpd/models/lenet/3channels/params/
 voxelize = 1
 voxel_size = 0.003
 remove_outliers = 0
-workspace = -1.0 1.0 -1.0 1.0 -1.0 1.0
+workspace = -0.5 0.5 -0.5 .5 -.5 .5
 # workspace = -2.0 2.0 -2.0 2.0 -2.0 2.0
 camera_position = 0 0 0
 # camera_position = 0.15 0 0.04
@@ -53,7 +53,7 @@ sample_above_plane = 0
 #   nn_radius: the radius for the neighborhood search
 #   num_orientations: the number of robot hand orientations to evaluate
 #   rotation_axes: the axes about which the point neighborhood gets rotated
-num_samples = 30
+num_samples = 100
 num_threads = 6
 nn_radius = 0.01
 num_orientations = 4
@@ -97,9 +97,9 @@ num_selected = 5
 #   plot_clustered_grasps: plot the grasps that after clustering
 #   plot_selected_grasps: plot the selected grasps (final output)
 plot_normals = 0
-plot_samples = 0
+plot_samples = 1
 plot_candidates = 0
 plot_filtered_candidates = 0
 plot_valid_grasps = 0
 plot_clustered_grasps = 0
-plot_selected_grasps = 0
+plot_selected_grasps = 1

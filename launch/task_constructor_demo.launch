@@ -22,4 +22,6 @@
     <rosparam command="load" file="$(find xarm7_gripper_moveit_config)/config/kinematics.yaml"/>
    </node>
 
+
+
 </launch>
