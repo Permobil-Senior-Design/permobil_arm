@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Load xarm with MTC's execution capability, no rviz -->
+  <arg name="ns" default="" />
+
+  <remap from="$(arg ns)/source_list" to="/source_list" />
+  <include file="$(find xarm7_gripper_moveit_config)/launch/moveit_rviz_common.launch">
+    <arg name="jnt_stat_source" value="[move_group/fake_controller_joint_states]" />
+    <!-- option to launch move_group node or not -->
+    <arg name="load_move_group" value="true" />
+    <!-- whether to use fake_execution controller to drive the motion -->
+    <arg name="fake_execution" value="true" />
+    <arg name="gripper_controller" value="true" />
+    <arg name="show_rviz" value="false"/>
+  </include>
+
+  <param name="move_group/capabilities" value="move_group/ExecuteTaskSolutionCapability" />
+
+
+   <node name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false"
+	args="-d $(find permobil_arm)/config/mtc_xarm.rviz" output="screen">
+    <rosparam command="load" file="$(find xarm7_gripper_moveit_config)/config/kinematics.yaml"/>
+   </node>
+
+
+
+</launch>

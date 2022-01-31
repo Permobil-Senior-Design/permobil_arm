@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="velocity_control" default="false"/>
+  <arg name="namespace" default="xarm"/>
+  <arg name="xarm_traj_controller" value="$(eval 'xarm7_traj_controller_velocity' if arg('velocity_control') else 'xarm7_traj_controller')" />
+  <arg name="gripper_trajectory_controller" value="$(eval 'gripper_trajectory_controller_velocity' if arg('velocity_control') else 'gripper_trajectory_controller')" />
+  <remap from="arm_controller/follow_joint_trajectory" to="/$(arg namespace)/$(arg xarm_traj_controller)/follow_joint_trajectory"/>
+  <remap from="gripper_controller/follow_joint_trajectory" to="/$(arg namespace)/$(arg gripper_trajectory_controller)/follow_joint_trajectory"/>
+  <remap from="joint_states" to="xarm/joint_states" />
+
+  <!-- xarm in gazebo + ros control -->
+  <include file="$(find xarm_gazebo)/launch/xarm7_beside_table.launch">
+    <arg name="add_gripper" value="true"/>
+  </include>
+
+  <!-- Misc Commands, derived from panda_world.launch from deep_grasp_demo-->
+  <arg name="debug" value="false"/>
+
+
+  <node name="joint_state_desired_publisher" pkg="topic_tools" type="relay" args="joint_states   joint_states_desired" />   
+
+
+
+  <!-- Run the main MoveIt! executable without trajectory execution (we do not have controllers configured by default) -->
+  <include file="$(find xarm7_gripper_moveit_config)/launch/move_group.launch">
+    <arg name="allow_trajectory_execution" value="true"/>
+    <arg name="fake_execution" value="false"/>
+    <arg name="info" value="true"/>
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="gripper_controller" value="true" />
+  </include>
+
+    <include file="$(find xarm7_gripper_moveit_config)/launch/planning_context.launch" >
+      <arg name="load_robot_description" value="true"/>
+    </include>
+
+
+  <!-- Load  ExecuteTaskSolutionCapability so we can execute found solutions in simulation -->
+  <param name="move_group/capabilities" value="move_group/ExecuteTaskSolutionCapability" />
+
+
+
+  <!-- Run Rviz -->
+  <node name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false" args="-d $(find permobil_arm)/config/mtc_xarm.rviz">
+    <rosparam command="load" file="$(find xarm7_gripper_moveit_config)/config/kinematics.yaml"/>
+  </node>
+
+  <!-- spawn object -->
+  <!-- cylinder 
+  <param name="object_description" command="$(find xacro)/xacro '$(find deep_grasp_task)/urdf/objects/cylinder.urdf.xacro'"/>
+  <node name="spawn_gazebo_object" pkg="gazebo_ros" type="spawn_model"
+     args="-urdf -param object_description -model cylinder -x 0.5 -y -0.25 -z 0.0" respawn="false" output="screen" />
+-->
+
+
+  <!-- bar clamp 
+  <param name="object_description" command="$(find xacro)/xacro '$(find deep_grasp_task)/urdf/objects/bar_clamp.urdf.xacro'"/>
+ <node name="spawn_gazebo_object" pkg="gazebo_ros" type="spawn_model"
+    args="-urdf -param object_description -model bar_clamp -x 0.5 -y -0.2 -z 0.03" respawn="false" output="screen" /> -->
+
+  <!-- mug -->
+  <param name="object_description" command="$(find xacro)/xacro '$(find deep_grasp_task)/urdf/objects/mug.urdf.xacro'"/>
+  <node name="spawn_gazebo_object" pkg="gazebo_ros" type="spawn_model"
+     args="-urdf -param object_description -model mug -x 0.5 -y -0.2 -z 0.0 -Y 1.57" respawn="false" output="screen" />
+</launch>
