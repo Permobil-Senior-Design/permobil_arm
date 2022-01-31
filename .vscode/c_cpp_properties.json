@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/xueyelin/xarm_ws/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/xueyelin/xarm_ws/src/learning_joy/include/**",
+        "/home/xueyelin/xarm_ws/src/permobil_arm/include/**",
+        "/home/xueyelin/xarm_ws/src/universal_robot/ur_kinematics/include/**",
+        "/home/xueyelin/xarm_ws/src/xarm_ros/xarm_api/include/**",
+        "/home/xueyelin/xarm_ws/src/xarm_ros/xarm_controller/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}
