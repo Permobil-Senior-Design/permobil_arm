@@ -11,7 +11,7 @@ image_geometry_filename = 0
 #   hand_height: the height of the hand
 #   init_bite: the minimum amount of the object to be covered by the hand
 finger_width = 0.02
-hand_outer_diameter = 0.10
+hand_outer_diameter = 0.12
 hand_depth = .06
 hand_height = 0.02
 init_bite = 0.01
@@ -22,14 +22,14 @@ init_bite = 0.01
 #   volume_height: the height of the cube inside the robot hand
 #   image_size: the size of the image (width and height; image is square)
 #   image_num_channels: the number of image channels
-volume_width = 0.06
+volume_width = 0.08
 volume_depth = 0.06
 volume_height = 0.02
 image_size = 60
 image_num_channels = 15
 
 # Path to directory that contains neural network parameters
-weights_file = /home/jeoseo/gpd_inst/gpd/models/lenet/15channels/params/
+weights_file = /home/jeoseo/ws_grasp_2/src/gpd/models/lenet/15channels/params/
 
 # Preprocessing of point cloud
 #   voxelize: if the cloud gets voxelized/downsampled
@@ -44,21 +44,16 @@ workspace = -1 1 -1 1 -1 1
 # workspace = -2.0 2.0 -2.0 2.0 -2.0 2.0
 camera_position = 0 0 0
 # camera_position = 0.15 0 0.04
-sample_above_plane = 1
+sample_above_plane = 0
 
 # Grasp candidate generation
-#   num_samples: number of samples to be drawn from the point cloud
-#   num_threads: number of CPU threads to be used
-#   nn_radius: neighborhood search radius for the local reference frame estimation
-#   num_orientations: number of robot hand orientations to evaluate
-#   num_finger_placements: number of finger placements to evaluate
-#   hand_axes: axes about which the point neighborhood gets rotated (0: approach, 1: binormal, 2: axis)
-#              (see https://raw.githubusercontent.com/atenpas/gpd2/master/readme/hand_frame.png)
-#   deepen_hand: if the hand is pushed forward onto the object
-#   friction_coeff: angle of friction cone in degrees
-#   min_viable: minimum number of points required on each side to be antipodal
-num_samples = 25
-num_threads = 12
+#   num_samples: the number of samples to be drawn from the point cloud
+#   num_threads: the number of CPU threads to be used
+#   nn_radius: the radius for the neighborhood search
+#   num_orientations: the number of robot hand orientations to evaluate
+#   rotation_axes: the axes about which the point neighborhood gets rotated
+num_samples = 50
+num_threads = 6
 nn_radius = 0.01
 num_orientations = 4
 num_finger_placements = 4

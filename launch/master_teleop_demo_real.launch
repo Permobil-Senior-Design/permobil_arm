@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <!--- Run Move Base -->  
+  <include file="$(find permobil_arm)/launch/teleop_space_nav_real.launch">
+  </include>
+
+    <include file="$(find xarm7_moveit_config)/launch/realMove_exec_vel.launch">
+  </include>
+</launch>
