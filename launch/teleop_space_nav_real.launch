@@ -20,4 +20,5 @@
     <rosparam ns="" command="load" file="$(find permobil_arm)/config/xarm7_servo_config_real.yaml" />
   </node>
 
+
 </launch>
