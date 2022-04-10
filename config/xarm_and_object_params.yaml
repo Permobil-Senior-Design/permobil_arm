@@ -1,5 +1,5 @@
 # Total planning attempts
-max_solutions: 20
+max_solutions: 30
 
 # Planning group and link names
 arm_group_name: "xarm7"
@@ -58,7 +58,7 @@ camera_pose: [0, -0.25, .1, 0, 0, 1.571] # side
 spawn_table: true
 table_name: "table"
 table_dimensions: [2, 2, 0.05]  # [length, width, height]
-table_pose: [0, 0, -0.05, 0, 0, 0]
+table_pose: [0, 0, -0.001, 0, 0, 0]
 
 # Gripper grasp frame transform [x,y,z,r,p,y]
 grasp_frame_transform: [0, 0, 0.1, 1.571,-4.712, 1.571]
