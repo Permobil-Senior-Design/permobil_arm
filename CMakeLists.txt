@@ -14,7 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
 	moveit_task_constructor_core
 	moveit_ros_planning_interface
 	rosparam_shortcuts
-
+  rviz_visual_tools
+  moveit_visual_tools
 )
 
 ## System dependencies are found with CMake's conventions
@@ -226,3 +227,9 @@ function(demo name)
 endfunction()
 
 demo(task_constructor_cartesian_demo)
+
+add_executable(planning_scene_ros_api_tutorial src/planning_scene_ros_api_tutorial.cpp)
+target_link_libraries(planning_scene_ros_api_tutorial ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS planning_scene_ros_api_tutorial DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})

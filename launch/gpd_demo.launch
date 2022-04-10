@@ -17,6 +17,7 @@
       <rosparam command="load" file="$(find permobil_arm)/config/xarm_and_object_params.yaml" />
   </node>
 
+
   <!-- Grasp detection using GPD -->
   <node name="grasp_cloud_detection" pkg="moveit_task_constructor_gpd" type="grasp_cloud_detection" output="screen">
     <param if="$(arg load_cloud)" name="path_to_pcd_file" value="$(arg path_to_pcd_file)"/>
