@@ -7,4 +7,7 @@
 
     <include file="$(find xarm7_gripper_moveit_config)/launch/realMove_exec_vel.launch">
   </include>
+
+  <node pkg="permobil_arm" name="space_nav_velocity_change" type="space_nav_velocity_change.py" output="screen"/>
+
 </launch>
