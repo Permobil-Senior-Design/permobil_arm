@@ -9,10 +9,10 @@ parameters:
   tracking_base_frame: camera_color_optical_frame
   tracking_marker_frame: camera_marker
 transformation:
-  qw: -0.00225498533906
-  qx: -0.00993543411089
-  qy: -0.669211594746
-  qz: 0.743002048212
-  x: 0.0322023424469
-  y: 0.0343318434351
-  z: -0.0210167210488
+  qx: .017
+  qy: .0007
+  qz: -.725
+  qw: .688  
+  x: 0.05
+  y: 0.03
+  z: .03

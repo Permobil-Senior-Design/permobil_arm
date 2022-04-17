@@ -17,14 +17,15 @@ world_frame: "world"
 table_reference_frame: "world"
 object_reference_frame: "world"
 camera_reference_frame: "world"
+# human_reference_frame: "world"
 surface_link: "table"
 
-# Collision object for picking
-# CYLINDER object specifications
-spawn_mesh: false #still spawns the model
-object_name: "object"
-object_dimensions: [0.25, 0.02] # [height, radius]
-object_pose: [0.4, -0.25, -0.05, 0, 0, 0]
+# # Collision object for picking
+# # CYLINDER object specifications
+# spawn_mesh: false #still spawns the model
+# object_name: "object"
+# object_dimensions: [0.25, 0.02] # [height, radius]
+# object_pose: [0.4, -0.25, -0.05, 0, 0, 0]
 
 # # BAR CLAMP
 # spawn_mesh: true
@@ -59,6 +60,12 @@ spawn_table: true
 table_name: "table"
 table_dimensions: [2, 2, 0.05]  # [length, width, height]
 table_pose: [0, 0, -0.001, 0, 0, 0]
+
+# Human/wheelchair object
+spawn_mesh: false 
+object_name: "object"
+object_dimensions: [0.2, 0.5, 1.0]  # [length, width, height]
+object_pose: [-0.4, 0, 0.3, 0, 0, 0]
 
 # Gripper grasp frame transform [x,y,z,r,p,y]
 grasp_frame_transform: [0, 0, 0.1, 1.571,-4.712, 1.571]
