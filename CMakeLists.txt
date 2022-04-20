@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 	rosparam_shortcuts
   rviz_visual_tools
   moveit_visual_tools
+  pcl_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -227,6 +228,11 @@ function(demo name)
 endfunction()
 
 demo(task_constructor_cartesian_demo)
+
+add_executable(pcl_converter src/pcl_converter.cpp)
+target_link_libraries(pcl_converter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS pcl_converter DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 
 add_executable(planning_scene_ros_api_tutorial src/planning_scene_ros_api_tutorial.cpp)
 target_link_libraries(planning_scene_ros_api_tutorial ${catkin_LIBRARIES} ${Boost_LIBRARIES})

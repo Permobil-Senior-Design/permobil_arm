@@ -55,7 +55,8 @@
   <build_export_depend>rospy</build_export_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
-
+  <build_depend>libpcl-all-dev</build_depend>
+  <exec_depend>libpcl-all</exec_depend>
   <!-- moveit -->
   <depend>moveit_core</depend>
   <depend>moveit_ros_planning_interface</depend>

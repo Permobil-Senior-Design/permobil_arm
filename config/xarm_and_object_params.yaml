@@ -20,33 +20,12 @@ camera_reference_frame: "world"
 # human_reference_frame: "world"
 surface_link: "table"
 
-# # Collision object for picking
-# # CYLINDER object specifications
-# spawn_mesh: false #still spawns the model
-# object_name: "object"
-# object_dimensions: [0.25, 0.02] # [height, radius]
-# object_pose: [0.4, -0.25, -0.05, 0, 0, 0]
-
-# # BAR CLAMP
-# spawn_mesh: true
-# object_name: "object"
-# object_mesh_file: "package://deep_grasp_task/meshes/objects/bar_clamp.dae"
-# object_dimensions: [0.06, 0.12, 0.04]  # [length, width, height]
-# object_pose: [0.5, -0.2, 0.03, 0, 0, 0]
-
-# # Mug
-#spawn_mesh: true
-#object_name: "object"
-#object_mesh_file: "package://deep_grasp_task/meshes/objects/mug.stl"
-#object_dimensions: [0.06, 0.06, 0.1]  # [length, width, height]
-#object_pose: [0.5, -0.2, -0.05, 0, 0, 0]
-
-# STRAWBERRY
-# spawn_mesh: true
-# object_name: "object"
-# object_mesh_file: "package://deep_grasp_task/meshes/objects/strawberry.dae"
-# object_dimensions: [0.02]  # [radius]
-# object_pose: [0.5, 0, 0., 0, 0, 0]
+ # Collision object for picking
+ # CYLINDER object specifications
+spawn_mesh: false #still spawns the model
+object_name: "cylinder"
+object_dimensions: [0.25, 0.02] # [height, radius]
+object_pose: [0.4, -0.25, -0.05, 0, 0, 0]
 
 # Camera collision object
 spawn_camera: false
@@ -61,11 +40,15 @@ table_name: "table"
 table_dimensions: [2, 2, 0.05]  # [length, width, height]
 table_pose: [0, 0, -0.001, 0, 0, 0]
 
-# Human/wheelchair object
-spawn_mesh: false 
-object_name: "object"
-object_dimensions: [0.2, 0.5, 1.0]  # [length, width, height]
-object_pose: [-0.4, 0, 0.3, 0, 0, 0]
+# Box list
+box_num: 2
+box_name0: "chair"
+box_dimensions0: [0.2, .2, .2]  # [length, width, height]
+box_pose0: [-0.25, 0, 0, 0, 0, 0]
+
+box_name1: "human"
+box_dimensions1: [0.4, .4, .4]  # [length, width, height]
+box_pose1: [-0.1, -0.4,0, 0, 0, 0]
 
 # Gripper grasp frame transform [x,y,z,r,p,y]
 grasp_frame_transform: [0, 0, 0.1, 1.571,-4.712, 1.571]
