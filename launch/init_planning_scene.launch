@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Load xarm with MTC's execution capability, no rviz -->
+  <arg name="ns" default="" />
+  <arg name="action_name" value="generate_grasps" doc="action name space"/>
+
+  <param name="move_group/capabilities" value="move_group/ExecuteTaskSolutionCapability" />
+
+  <!-- Run MTC pick and place -->
+  <node name="mtc_tutorial" pkg="deep_grasp_task" type="deep_grasp_demo" output="screen">
+      <param name="execute" value="true" />
+      <param name="action_name" value="$(arg action_name)"/>
+      <rosparam command="load" file="$(find permobil_arm)/config/xarm_and_object_params.yaml" />
+  </node>
+
+
+</launch>
