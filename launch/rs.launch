@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <!-- numbers come from rs_calibration.yaml, (not sure how to automate)-->
-    <node pkg="tf" type="static_transform_publisher" name="camera_transformer" args=" .05 .03 .03 .017 .0007 -.725 .688   link_eef camera_depth_optical_frame 100" />
+    <node pkg="tf" type="static_transform_publisher" name="camera_transformer" args=" .05 .03 .03 .017 .0007 -.725 .688   link_eef camera_link 100" />
     
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
         <arg name="enable_pointcloud" value="true"/>
