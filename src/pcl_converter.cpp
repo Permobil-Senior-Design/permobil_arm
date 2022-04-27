@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     tf2_ros::TransformListener tfListener(tfBuffer);
     sleep(5);
     ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2>("/camera/depth/color/points", 1, callback);
-    ros::Publisher pub = nh.advertise<sensor_msgs::PointCloud2>("/xarm_pcd", 1000);
+    ros::Publisher pub = nh.advertise<sensor_msgs::PointCloud2>("/gpd_pcd", 1000);
     ros::Rate loop_rate(10);
     while (ros::ok()){
         
@@ -33,10 +33,14 @@ int main(int argc, char **argv)
         //pcl_ros::transformPointCloud("link_base",cloud_msg,out_msg,tfBuffer);
         
         geometry_msgs::TransformStamped transform;
-        transform = tfBuffer.lookupTransform ("link_base", "camera_depth_optical_frame", cloud_msg.header.stamp, ros::Duration(3.0));
-        pcl_ros::transformPointCloud("link_base", transform.transform, cloud_msg, out_msg);
-        pub.publish(out_msg);
-
+        
+        try{
+          transform = tfBuffer.lookupTransform ("link_base", "camera_depth_optical_frame", cloud_msg.header.stamp, ros::Duration(3.0));
+          pcl_ros::transformPointCloud("link_base", transform.transform, cloud_msg, out_msg);
+          pub.publish(out_msg);
+        } catch(...){
+          ROS_INFO_NAMED("pcl_converter", "no transform found");
+        }
         ros::spinOnce();
 
         loop_rate.sleep();
