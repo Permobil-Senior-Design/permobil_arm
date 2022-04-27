@@ -20,6 +20,11 @@ camera_reference_frame: "world"
 # human_reference_frame: "world"
 surface_link: "table"
 
+# Environment object
+env_name: "<octomap>"
+
+
+
  # Collision object for picking
  # CYLINDER object specifications
 spawn_mesh: false #still spawns the model
