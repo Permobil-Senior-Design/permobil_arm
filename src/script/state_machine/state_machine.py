@@ -33,6 +33,8 @@ def getKey():
         print(c)
         print(c)
 
+    print(c)
+
     return c.lower()
 
 
@@ -41,14 +43,14 @@ class SpaceMouseManual(smach.State):
         smach.State.__init__(self, outcomes=['trigger_auto', 'trigger_moveit_manual','trigger_error'])
 
         # declare services
-        '''
+        
         rospy.wait_for_service(GET_ERR_SRV_NAME)
         self.get_err_srv = rospy.ServiceProxy(GET_ERR_SRV_NAME, GetErr)
 
         rospy.wait_for_service(SWITCH_CTRLLER_SRV_NAME)
         self.switch_controller_srv = rospy.ServiceProxy(
             SWITCH_CTRLLER_SRV_NAME, SwitchController)
-        '''
+        
 
 
     def execute(self, userdata):
@@ -56,19 +58,23 @@ class SpaceMouseManual(smach.State):
         # monitor  for error
         # change to the group velocity controller and then remain in this state until a key is pressed
 
-        '''
+        
         self.switch_controller_srv(SwitchControllerRequest(
                                         start_controllers=['joint_group_velocity_controller'],
                                         stop_controllers=['xarm7_traj_controller_velocity']))
-        '''
-
-
+        
 
         while not rospy.is_shutdown():
-            # call error service to check if error exists
-            '''
-            res=self.get_err_srv()
+            #for some reason this doesnt work even though getKey is definitely being called
 
+
+            if(getKey() == 'm'):
+                # switch to auto
+                print("m pressed")
+                return 'trigger_moveit_manual'
+            # call error service to check if error exists
+            res=self.get_err_srv()
+            '''
             # rosservice call /xarm/get_err
             if res.err:
                 return 'trigger_error'
@@ -76,12 +82,7 @@ class SpaceMouseManual(smach.State):
             '''
 
 
-            key=getKey()
 
-            if(key == 'm'):
-                # switch to auto
-                print("m pressed")
-                return 'trigger_moveit_manual'
 
 
 class MoveitManual(smach.State):
@@ -111,7 +112,7 @@ class MoveitManual(smach.State):
 
             if(key == 's'):
                 print("s pressed")
-                return 'trigger_moveit_manual'
+                return 'trigger_spacemouse_manual'
 
 
 class Error(smach.State):
@@ -166,13 +167,6 @@ class Automatic(smach.State):
         return 'outcome2'
 
 
-
-
-
-        print(msg.err)
-        return False
-    else:
-        return True
 
 def main():
     rospy.init_node('smach_example_state_machine')
