@@ -18,6 +18,7 @@ prevRight = 0
 # 0 - gripper mode
 # 1 - velocity change mode
 mode = 0
+# need rosservice call /xarm/gripper_config 1500
 
 def callback(data):
     global prevLeft, prevRight,mode

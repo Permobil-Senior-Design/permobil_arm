@@ -5,9 +5,11 @@
   <include file="$(find permobil_arm)/launch/teleop_space_nav_real.launch">
   </include>
 
-    <include file="$(find xarm7_gripper_moveit_config)/launch/realMove_exec_vel.launch">
+  <include file="$(find xarm7_gripper_moveit_config)/launch/realMove_exec.launch">
   </include>
 
-  <node pkg="permobil_arm" name="space_nav_velocity_change" type="space_nav_velocity_change.py" output="screen"/>
 
+  <!--
+  <node pkg="permobil_arm" name="space_nav_velocity_change" type="state_machine.py" output="screen"/>
+  -->
 </launch>
