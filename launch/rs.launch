@@ -1,35 +1,23 @@
 <?xml version="1.0"?>
 <launch>
     <!-- numbers come from rs_calibration.yaml, (not sure how to automate)-->
-    <node pkg="tf" type="static_transform_publisher" name="camera_transformer" args=" .05 .02 .025 .0 -.707 0 .707   link_eef camera_link 100" />
+    <node pkg="tf" type="static_transform_publisher" name="camera_transformer" args=" .05 .02 .08 .0 -.707 0 .707   link_eef camera_link 100" />
     
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
         <arg name="enable_pointcloud" value="true"/>
+        <!-- <arg name="clip_distance" value="1"/> -->
     </include>
-
     <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
-    <!-- Run a passthrough filter to clean NaNs -->
-    <node pkg="nodelet" type="nodelet" name="passthrough" args="load pcl/PassThrough pcl_manager" output="screen">
+    <!-- Run a VoxelGrid filter to clean NaNs and downsample the data -->
+    <!-- This is for the octomap for collisions-->
+    <node pkg="nodelet" type="nodelet" name="voxel_grid" args="load pcl/VoxelGrid pcl_manager" output="screen">
         <remap from="~input" to="/camera/depth/color/points" />
         <rosparam>
         filter_field_name: z
-        filter_limit_min: 0.2
+        filter_limit_min: -1000
         filter_limit_max: 1000
         filter_limit_negative: False
-        input_frame: camera_depth_optical_frame
-        output_frame: link_base
+        leaf_size: .01
         </rosparam>
-    </node> 
-    <node pkg="nodelet" type="nodelet" name="outlier" args="load pcl/StatisticalOutlierRemoval pcl_manager" output="screen">
-        <remap from="~input" to="passthrough/output" />
-        <param name="~mean_k" value="100" />
-        <param name="~stddev" value="1" />
-        <param name="~negative" value="False" />
     </node>
-
-<!-- 
-
-    <node pkg="permobil_arm" type="pcl_converter" name="pcl_converter"/>
-     -->
-
 </launch>
