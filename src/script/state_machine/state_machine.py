@@ -6,7 +6,14 @@ from xarm_msgs.srv import *
 from controller_manager_msgs.srv import SwitchController
 from controller_manager_msgs.srv import SwitchControllerRequest
 from sensor_msgs.msg import Joy
+from std_msgs.msg import Int8
+from moveit_msgs.srv import *
+from std_srvs.srv import Empty
 import dynamic_reconfigure.client
+from actionlib.simple_action_client import SimpleActionClient, GoalStatus
+import sys
+import os
+import roslaunch
 
 
 from KBHit import KBHit
@@ -20,8 +27,8 @@ SET_MODE_SRV_NAME = "/xarm/set_mode"
 SET_STATE_SRV_NAME = "/xarm/set_state"
 GRIPPER_MOVE_SRV_NAME = "/xarm/gripper_move"
 GET_GRIPPER_STATE_SRV_NAME = "/xarm/gripper_state"
-SET_GRIPPER_CONFIG = "/xarm/gripper_config"
-
+SET_GRIPPER_CONFIG_SRV_NAME = "/xarm/gripper_config"
+RESET_SERVO_SERVER_STATUS_SRV_NAME = "/servo_server/reset_servo_status"
 kb = KBHit()
 
 def getKey():
@@ -33,6 +40,15 @@ def getKey():
 
 # connect the services needed
 
+rospy.wait_for_service(CLEAR_ERR_SRV_NAME, timeout=1)
+rospy.wait_for_service(GET_ERR_SRV_NAME, timeout=1)
+rospy.wait_for_service(SWITCH_CTRLLER_SRV_NAME, timeout=1)
+rospy.wait_for_service(SET_MODE_SRV_NAME, timeout=1)
+rospy.wait_for_service(GRIPPER_MOVE_SRV_NAME, timeout=1)
+rospy.wait_for_service(GET_GRIPPER_STATE_SRV_NAME, timeout=1)
+rospy.wait_for_service(SET_GRIPPER_CONFIG_SRV_NAME, timeout=1)
+rospy.wait_for_service(RESET_SERVO_SERVER_STATUS_SRV_NAME, timeout=1)
+
 switch_controller_srv=rospy.ServiceProxy(SWITCH_CTRLLER_SRV_NAME, SwitchController)
 set_mode_srv=rospy.ServiceProxy(SET_MODE_SRV_NAME, SetInt16)
 set_state_srv=rospy.ServiceProxy(SET_STATE_SRV_NAME, SetInt16)
@@ -40,19 +56,22 @@ get_err_srv = rospy.ServiceProxy(GET_ERR_SRV_NAME, GetErr)
 clear_err_srv=rospy.ServiceProxy(CLEAR_ERR_SRV_NAME, ClearErr)
 gripper_move_srv = rospy.ServiceProxy(GRIPPER_MOVE_SRV_NAME, GripperMove)
 get_gripper_state_srv = rospy.ServiceProxy(GET_GRIPPER_STATE_SRV_NAME, GripperState)
-set_gripper_config_srv = rospy.ServiceProxy(SET_GRIPPER_CONFIG, GripperConfig)
+set_gripper_config_srv = rospy.ServiceProxy(SET_GRIPPER_CONFIG_SRV_NAME, GripperConfig)
+reset_servo_server_status_srv = rospy.ServiceProxy(RESET_SERVO_SERVER_STATUS_SRV_NAME, Empty)
 
 
 class SpaceMouseManual(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['trigger_auto', 'trigger_moveit_manual','trigger_error','trigger_limp'])
 
+        #self.recordedPose =
         #start node listening to joy topic to check for 
 
         #define the return map
         self.ret = {
             'm': 'trigger_moveit_manual',
-            'l': 'trigger_limp'
+            'l': 'trigger_limp',
+            'e': 'trigger_auto'
         }
 
         # speed adjust
@@ -67,6 +86,18 @@ class SpaceMouseManual(smach.State):
             't': False,
             'y': True
         }
+
+        # launch gpd demo with args
+        '''
+                self.select = {
+            'q': 'topLeft',
+            'w': 'topRight',
+            'a': 'botLeft',
+            's': 'botRight',
+            'e': 'center'
+        }
+        '''
+
 
     def gripperMoveCB(self,data):
         rightButton = data.buttons[0]
@@ -85,6 +116,12 @@ class SpaceMouseManual(smach.State):
                 newPos = curPos + 50
 
             gripper_move_srv(newPos)
+
+    def servoStatusCB(self,data):
+        if data.data > 0:
+            print("I know the servo status is wrong right now! Clearing!")
+            reset_servo_server_status_srv()
+            pass
 
     def changeLinVel(self,inc):
         newVel = rospy.get_param('/servo_server/scale/linear') + (.1 if inc else -.1)
@@ -109,6 +146,9 @@ class SpaceMouseManual(smach.State):
         else:
             print("max rotational velocity reached")
 
+    def unregisterSubs(self):
+        self.joySub.unregister()
+        self.servoStatusSub.unregister()
 
 
     def execute(self, userdata):
@@ -123,6 +163,7 @@ class SpaceMouseManual(smach.State):
                                         stop_controllers=['xarm7_traj_controller_velocity']))
         
         self.joySub = rospy.Subscriber("/spacenav/joy", Joy, self.gripperMoveCB)
+        self.servoStatusSub = rospy.Subscriber("/servo_server/status",Int8, self.servoStatusCB)
 
         while not rospy.is_shutdown():
             #for some reason this doesnt work even though getKey is definitely being called
@@ -133,19 +174,25 @@ class SpaceMouseManual(smach.State):
 
             # check if intentionally state switch is requested
             if c in self.ret:
-                self.joySub.unregister()
+                self.unregisterSubs()
                 return self.ret[c]
-            
-            # perform increase speed
-            if c in self.linVelKey:
+            elif c in self.linVelKey:
                 self.changeLinVel(self.linVelKey[c])
             elif c in self.rotSpeedKey:
                 self.changeRotVel(self.rotSpeedKey[c])
+            '''
+            elif c in self.select:
+                
 
-            # call error service to check if error exists
+                return "trigger_auto"
+            '''
+
+            # call services for hardware errors and collision errors
             if get_err_srv().err:
-                self.joySub.unregister()
+                self.unregisterSubs()
                 return 'trigger_error'
+            
+            #else if 
             
             
 
@@ -215,23 +262,38 @@ class Error(smach.State):
 
 class Automatic(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['outcome2'])
-        # change the contoller type
-        rospy.wait_for_service(SWITCH_CTRLLER_SRV_NAME)
-        self.switch_controller_srv=rospy.ServiceProxy(
-            SWITCH_CTRLLER_SRV_NAME, SwitchController)
+        smach.State.__init__(self, outcomes=['trigger_spacemouse_manual'])
+
 
     def execute(self, userdata):
         rospy.loginfo('Executing state Automatic')
 
+        set_mode_srv(4)
+        set_state_srv(0)
+
+        # check 
+
+        switch_controller_srv(SwitchControllerRequest(
+                                start_controllers=['xarm7_traj_controller_velocity'],
+                                stop_controllers=['joint_group_velocity_controller']))
+        
+        #os.system("roslaunch permobil_arm gpd_demo.launch")
+        #os.system()
+        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        roslaunch.configure_logging(uuid)
+        launch = roslaunch.parent.ROSLaunchParent(uuid, ["/home/xueyelin/test_ws/src/permobil_arm/launch/gpd_demo.launch"])
+        launch.start()
+        rospy.loginfo("started")
+        rospy.sleep(1)
+        # 3 seconds later
+        launch.shutdown()
+
         while not rospy.is_shutdown():
 
-            key = ''
-            if(key == 'm'):
+            c = getKey()
+            if(c == 's'):
             # switch to auto
-                print("a pressed")
-
-        return 'outcome2'
+                return 'trigger_spacemouse_manual'
 
 
 def main():
@@ -241,7 +303,7 @@ def main():
 
     # Create a SMACH state machine
     sm=smach.StateMachine(outcomes=['outcome5'])
-
+    sm.userdata.nonCollisionJoints = 0
     # Open the container
     sis=smach_ros.IntrospectionServer('server_name', sm, '/SM_ROOT')
     sis.start()
@@ -264,10 +326,23 @@ def main():
                                     'trigger_moveit_manual': 'MoveitManual'})
 
         smach.StateMachine.add('Automatic', Automatic(),
-                            transitions={'outcome2': 'SpaceMouseManual'})
+                            transitions={'trigger_spacemouse_manual': 'SpaceMouseManual'})
         
+        '''
+                smach.StateMachine.add('MoveGroupAction',
+                      simple_action_state('move_group',
+                                        GripperAction,
+                                        goal_slots=['max_effort', 
+                                                    'position']),
+                      transitions={'succeeded':'APPROACH_PLUG'},
+                      remapping={'max_effort':'user_data_max',
+                                 'position':'user_data_position'})
+        
+        '''
+
+
         smach.StateMachine.add('Error', Error(),
-                            transitions={'manual_error_cleared': 'SpaceMouseManual'})
+                            transitions={'manual_error_cleared': 'Limp'})
 
 
     # Execute SMACH plan
