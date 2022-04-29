@@ -7,7 +7,7 @@
   <param name="move_group/capabilities" value="move_group/ExecuteTaskSolutionCapability" />
 
   <!-- Run MTC pick and place -->
-  <node name="mtc_tutorial" pkg="deep_grasp_task" type="deep_grasp_demo" output="screen">
+  <node name="mtc_tutorial" pkg="deep_grasp_task" type="deep_grasp_init_scene" output="screen">
       <param name="execute" value="true" />
       <param name="action_name" value="$(arg action_name)"/>
       <rosparam command="load" file="$(find permobil_arm)/config/xarm_and_object_params.yaml" />
