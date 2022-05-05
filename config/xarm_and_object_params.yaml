@@ -1,11 +1,11 @@
 # Total planning attempts
-max_solutions: 30
+max_solutions: 20
 
 # Planning group and link names
 arm_group_name: "xarm7"
 eef_name: "xarm_gripper"
 hand_group_name: "xarm_gripper"
-hand_frame: "link_tcp"
+hand_frame: "link_eef"
 
 # Poses
 hand_open_pose: "open"
@@ -42,18 +42,22 @@ camera_pose: [0, -0.25, .1, 0, 0, 1.571] # side
 # Table model
 spawn_table: true
 table_name: "table"
-table_dimensions: [2, 2, 0.05]  # [length, width, height]
-table_pose: [0, 0, -0.001, 0, 0, 0]
+table_dimensions: [2, 2, 0.1]  # [length, width, height]
+table_pose: [0, 0, -0.025, 0, 0, 0]
 
 # Box list
-box_num: 2
+box_num: 3
 box_name0: "chair"
-box_dimensions0: [0.2, .2, .2]  # [length, width, height]
-box_pose0: [-0.25, 0, 0, 0, 0, 0]
+box_dimensions0: [0.3, .3, .2]  # [length, width, height]
+box_pose0: [-0.25, -0.1, 0, 0, 0, 0]
 
 box_name1: "human"
-box_dimensions1: [0.4, .4, .4]  # [length, width, height]
-box_pose1: [-0.1, -0.4,0, 0, 0, 0]
+box_dimensions1: [0.5, .5, .25]  # [length, width, height]
+box_pose1: [-0.2, 0.4,0, 0, 0, 0]
+
+box_name2: "table2"
+box_dimensions2: [.2,.2,.024]
+box_pose2: [0, 0, -0.025,0,0,0]
 
 # Gripper grasp frame transform [x,y,z,r,p,y]
 grasp_frame_transform: [0, 0, 0.1, 1.571,-4.712, 1.571]

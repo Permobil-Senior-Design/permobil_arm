@@ -17,6 +17,7 @@ from moveit_msgs.msg import MoveGroupAction
 from moveit_msgs.msg import MoveGroupGoal
 from moveit_msgs.msg import MoveGroupResult
 from moveit_msgs.msg import MoveGroupFeedback
+
 from moveit_msgs.msg import MotionPlanRequest
 
 

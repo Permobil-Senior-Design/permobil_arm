@@ -108,7 +108,7 @@ class SpaceMouseManual(smach.State):
 
             curPos = get_gripper_state_srv().curr_pos
             newPos = curPos
-            print(curPos)
+            print("The current gripper position is: %d"%curPos)
             
             if leftButton == 1 :
                 newPos = curPos - 50
@@ -119,7 +119,7 @@ class SpaceMouseManual(smach.State):
 
     def servoStatusCB(self,data):
         if data.data > 0:
-            print("I know the servo status is wrong right now! Clearing!")
+            #print("I know the servo status is wrong right now! Clearing!")
             reset_servo_server_status_srv()
             pass
 
@@ -180,12 +180,7 @@ class SpaceMouseManual(smach.State):
                 self.changeLinVel(self.linVelKey[c])
             elif c in self.rotSpeedKey:
                 self.changeRotVel(self.rotSpeedKey[c])
-            '''
-            elif c in self.select:
-                
 
-                return "trigger_auto"
-            '''
 
             # call services for hardware errors and collision errors
             if get_err_srv().err:
@@ -277,22 +272,22 @@ class Automatic(smach.State):
                                 start_controllers=['xarm7_traj_controller_velocity'],
                                 stop_controllers=['joint_group_velocity_controller']))
         
-        #os.system("roslaunch permobil_arm gpd_demo.launch")
-        #os.system()
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch.configure_logging(uuid)
         launch = roslaunch.parent.ROSLaunchParent(uuid, ["/home/xueyelin/test_ws/src/permobil_arm/launch/gpd_demo.launch"])
         launch.start()
-        rospy.loginfo("started")
-        rospy.sleep(1)
+        rospy.loginfo("started gpd_demo launch file")
+        #rospy.sleep(1)
         # 3 seconds later
-        launch.shutdown()
+        #
 
         while not rospy.is_shutdown():
 
             c = getKey()
+            # or status == 3 
             if(c == 's'):
             # switch to auto
+                launch.shutdown()
                 return 'trigger_spacemouse_manual'
 
 
